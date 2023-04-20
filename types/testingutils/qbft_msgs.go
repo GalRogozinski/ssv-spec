@@ -220,9 +220,6 @@ var TestingPrepareMessageWithParams = func(
 		Round:      round,
 		Identifier: identifier,
 		Root:       root,
-		// empty arrays to compare with the empty arrays in the message
-		RoundChangeJustification: [][]byte{},
-		PrepareJustification:     [][]byte{},
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = TestingQBFTFullData
@@ -310,9 +307,6 @@ var TestingCommitMessageWithParams = func(
 		Round:      round,
 		Identifier: identifier,
 		Root:       root,
-		// empty arrays to compare with the empty arrays in the message
-		RoundChangeJustification: [][]byte{},
-		PrepareJustification:     [][]byte{},
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	return ret
