@@ -33,7 +33,7 @@ func (i *Instance) uponRoundChange(
 		return errors.Wrap(err, "could not get proposal justification for leading ronud")
 	}
 	if justifiedRoundChangeMsg != nil {
-		roundChangeJustification, _ := justifiedRoundChangeMsg.Message.GetRoundChangeJustifications() // no need to check error, check on isValidRoundChange
+		roundChangeJustification, _ := justifiedRoundChangeMsg.Message.GetProposalJustification() // no need to check error, check on isValidRoundChange
 
 		proposal, err := CreateProposal(
 			i.State,
@@ -121,7 +121,7 @@ func hasReceivedProposalJustificationForLeadingRound(
 			valueToPropose = signedRoundChange.FullData
 		}
 
-		roundChangeJustification, _ := msg.Message.GetRoundChangeJustifications() // no need to check error, checked on isValidRoundChange
+		roundChangeJustification, _ := msg.Message.GetProposalJustification() // no need to check error, checked on isValidRoundChange
 		if isProposalJustificationForLeadingRound(
 			state,
 			config,
@@ -237,7 +237,7 @@ func validRoundChangeForData(
 		}
 
 		// validate prepare message justifications
-		prepareMsgs, _ := signedMsg.Message.GetRoundChangeJustifications() // no need to check error, checked on signedMsg.Message.Validate()
+		prepareMsgs, _ := signedMsg.Message.GetProposalJustification() // no need to check error, checked on signedMsg.Message.Validate()
 		for _, pm := range prepareMsgs {
 			if err := validSignedPrepareForHeightRoundAndRoot(
 				config,
@@ -344,9 +344,9 @@ func CreateRoundChange(state *State, config IConfig, newRound Round, instanceSta
 		Round:      newRound,
 		Identifier: state.ID,
 
-		Root:                     root,
-		DataRound:                round,
-		RoundChangeJustification: justificationsData,
+		Root:                  root,
+		DataRound:             round,
+		ProposalJustification: justificationsData,
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {

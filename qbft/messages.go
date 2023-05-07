@@ -50,14 +50,14 @@ type Message struct {
 	Round      Round  // QBFT round for which the msg is for
 	Identifier []byte `ssz-max:"56"` // instance Identifier this msg belongs to
 
-	Root                     [32]byte `ssz-size:"32"`
-	DataRound                Round
-	RoundChangeJustification [][]byte `ssz-max:"13,65536"` // 2^16
-	PrepareJustification     [][]byte `ssz-max:"13,65536"` // 2^16
+	Root                  [32]byte `ssz-size:"32"`
+	DataRound             Round
+	ProposalJustification [][]byte `ssz-max:"13,65536"` // 2^16
+	PrepareJustification  [][]byte `ssz-max:"13,65536"` // 2^16
 }
 
-func (msg *Message) GetRoundChangeJustifications() ([]*SignedMessage, error) {
-	return unmarshalJustifications(msg.RoundChangeJustification)
+func (msg *Message) GetProposalJustification() ([]*SignedMessage, error) {
+	return unmarshalJustifications(msg.ProposalJustification)
 }
 
 func (msg *Message) GetPrepareJustifications() ([]*SignedMessage, error) {
@@ -118,7 +118,7 @@ func (msg *Message) Validate() error {
 	if len(msg.Identifier) == 0 {
 		return errors.New("message identifier is invalid")
 	}
-	if _, err := msg.GetRoundChangeJustifications(); err != nil {
+	if _, err := msg.GetProposalJustification(); err != nil {
 		return err
 	}
 	if _, err := msg.GetPrepareJustifications(); err != nil {
@@ -243,10 +243,10 @@ func (signedMsg *SignedMessage) DeepCopy() *SignedMessage {
 		Identifier: make([]byte, len(signedMsg.Message.Identifier)),
 		//Data:       make([]byte, len(signedMsg.Message.Data)),
 
-		Root:                     signedMsg.Message.Root,
-		DataRound:                signedMsg.Message.DataRound,
-		PrepareJustification:     signedMsg.Message.PrepareJustification,
-		RoundChangeJustification: signedMsg.Message.RoundChangeJustification,
+		Root:                  signedMsg.Message.Root,
+		DataRound:             signedMsg.Message.DataRound,
+		PrepareJustification:  signedMsg.Message.PrepareJustification,
+		ProposalJustification: signedMsg.Message.ProposalJustification,
 	}
 	copy(ret.Message.Identifier, signedMsg.Message.Identifier)
 	//copy(ret.Message.Data, signedMsg.Message.Data)

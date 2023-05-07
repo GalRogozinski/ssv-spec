@@ -113,8 +113,8 @@ var TestingProposalMessageWithIdentifierAndFullData = func(sk *bls.SecretKey, id
 		Identifier: identifier,
 		Root:       sha256.Sum256(fullData),
 
-		RoundChangeJustification: [][]byte{},
-		PrepareJustification:     [][]byte{},
+		ProposalJustification: [][]byte{},
+		PrepareJustification:  [][]byte{},
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = fullData
@@ -130,13 +130,13 @@ var TestingProposalMessageWithParams = func(
 	prepareJustification [][]byte,
 ) *qbft.SignedMessage {
 	msg := &qbft.Message{
-		MsgType:                  qbft.ProposalMsgType,
-		Height:                   height,
-		Round:                    round,
-		Identifier:               TestingIdentifier,
-		Root:                     root,
-		RoundChangeJustification: roundChangeJustification,
-		PrepareJustification:     prepareJustification,
+		MsgType:               qbft.ProposalMsgType,
+		Height:                height,
+		Round:                 round,
+		Identifier:            TestingIdentifier,
+		Root:                  root,
+		ProposalJustification: roundChangeJustification,
+		PrepareJustification:  prepareJustification,
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = TestingQBFTFullData
@@ -205,8 +205,8 @@ var TestingPrepareMessageWithIdentifierAndRoot = func(sk *bls.SecretKey, id type
 		Identifier: identifier,
 		Root:       root,
 
-		RoundChangeJustification: [][]byte{},
-		PrepareJustification:     [][]byte{},
+		ProposalJustification: [][]byte{},
+		PrepareJustification:  [][]byte{},
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = []byte{}
@@ -428,13 +428,13 @@ var TestingRoundChangeMessageWithParams = func(
 	roundChangeJustification [][]byte,
 ) *qbft.SignedMessage {
 	msg := &qbft.Message{
-		MsgType:                  qbft.RoundChangeMsgType,
-		Height:                   height,
-		Round:                    round,
-		Identifier:               TestingIdentifier,
-		Root:                     root,
-		DataRound:                dataRound,
-		RoundChangeJustification: roundChangeJustification,
+		MsgType:               qbft.RoundChangeMsgType,
+		Height:                height,
+		Round:                 round,
+		Identifier:            TestingIdentifier,
+		Root:                  root,
+		DataRound:             dataRound,
+		ProposalJustification: roundChangeJustification,
 	}
 	ret := SignQBFTMsg(sk, id, msg)
 	ret.FullData = TestingQBFTFullData

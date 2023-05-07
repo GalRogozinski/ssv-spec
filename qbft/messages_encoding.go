@@ -37,11 +37,11 @@ func (m *Message) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	// Field (5) 'DataRound'
 	dst = ssz.MarshalUint64(dst, uint64(m.DataRound))
 
-	// Offset (6) 'RoundChangeJustification'
+	// Offset (6) 'ProposalJustification'
 	dst = ssz.WriteOffset(dst, offset)
-	for ii := 0; ii < len(m.RoundChangeJustification); ii++ {
+	for ii := 0; ii < len(m.ProposalJustification); ii++ {
 		offset += 4
-		offset += len(m.RoundChangeJustification[ii])
+		offset += len(m.ProposalJustification[ii])
 	}
 
 	// Offset (7) 'PrepareJustification'
@@ -58,24 +58,24 @@ func (m *Message) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 	}
 	dst = append(dst, m.Identifier...)
 
-	// Field (6) 'RoundChangeJustification'
-	if size := len(m.RoundChangeJustification); size > 13 {
-		err = ssz.ErrListTooBigFn("Message.RoundChangeJustification", size, 13)
+	// Field (6) 'ProposalJustification'
+	if size := len(m.ProposalJustification); size > 13 {
+		err = ssz.ErrListTooBigFn("Message.ProposalJustification", size, 13)
 		return
 	}
 	{
-		offset = 4 * len(m.RoundChangeJustification)
-		for ii := 0; ii < len(m.RoundChangeJustification); ii++ {
+		offset = 4 * len(m.ProposalJustification)
+		for ii := 0; ii < len(m.ProposalJustification); ii++ {
 			dst = ssz.WriteOffset(dst, offset)
-			offset += len(m.RoundChangeJustification[ii])
+			offset += len(m.ProposalJustification[ii])
 		}
 	}
-	for ii := 0; ii < len(m.RoundChangeJustification); ii++ {
-		if size := len(m.RoundChangeJustification[ii]); size > 65536 {
-			err = ssz.ErrBytesLengthFn("Message.RoundChangeJustification[ii]", size, 65536)
+	for ii := 0; ii < len(m.ProposalJustification); ii++ {
+		if size := len(m.ProposalJustification[ii]); size > 65536 {
+			err = ssz.ErrBytesLengthFn("Message.ProposalJustification[ii]", size, 65536)
 			return
 		}
-		dst = append(dst, m.RoundChangeJustification[ii]...)
+		dst = append(dst, m.ProposalJustification[ii]...)
 	}
 
 	// Field (7) 'PrepareJustification'
@@ -136,7 +136,7 @@ func (m *Message) UnmarshalSSZ(buf []byte) error {
 	// Field (5) 'DataRound'
 	m.DataRound = Round(ssz.UnmarshallUint64(buf[60:68]))
 
-	// Offset (6) 'RoundChangeJustification'
+	// Offset (6) 'ProposalJustification'
 	if o6 = ssz.ReadOffset(buf[68:72]); o6 > size || o3 > o6 {
 		return ssz.ErrOffset
 	}
@@ -158,22 +158,22 @@ func (m *Message) UnmarshalSSZ(buf []byte) error {
 		m.Identifier = append(m.Identifier, buf...)
 	}
 
-	// Field (6) 'RoundChangeJustification'
+	// Field (6) 'ProposalJustification'
 	{
 		buf = tail[o6:o7]
 		num, err := ssz.DecodeDynamicLength(buf, 13)
 		if err != nil {
 			return err
 		}
-		m.RoundChangeJustification = make([][]byte, num)
+		m.ProposalJustification = make([][]byte, num)
 		err = ssz.UnmarshalDynamic(buf, num, func(indx int, buf []byte) (err error) {
 			if len(buf) > 65536 {
 				return ssz.ErrBytesLength
 			}
-			if cap(m.RoundChangeJustification[indx]) == 0 {
-				m.RoundChangeJustification[indx] = make([]byte, 0, len(buf))
+			if cap(m.ProposalJustification[indx]) == 0 {
+				m.ProposalJustification[indx] = make([]byte, 0, len(buf))
 			}
-			m.RoundChangeJustification[indx] = append(m.RoundChangeJustification[indx], buf...)
+			m.ProposalJustification[indx] = append(m.ProposalJustification[indx], buf...)
 			return nil
 		})
 		if err != nil {
@@ -213,10 +213,10 @@ func (m *Message) SizeSSZ() (size int) {
 	// Field (3) 'Identifier'
 	size += len(m.Identifier)
 
-	// Field (6) 'RoundChangeJustification'
-	for ii := 0; ii < len(m.RoundChangeJustification); ii++ {
+	// Field (6) 'ProposalJustification'
+	for ii := 0; ii < len(m.ProposalJustification); ii++ {
 		size += 4
-		size += len(m.RoundChangeJustification[ii])
+		size += len(m.ProposalJustification[ii])
 	}
 
 	// Field (7) 'PrepareJustification'
@@ -264,15 +264,15 @@ func (m *Message) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 	// Field (5) 'DataRound'
 	hh.PutUint64(uint64(m.DataRound))
 
-	// Field (6) 'RoundChangeJustification'
+	// Field (6) 'ProposalJustification'
 	{
 		subIndx := hh.Index()
-		num := uint64(len(m.RoundChangeJustification))
+		num := uint64(len(m.ProposalJustification))
 		if num > 13 {
 			err = ssz.ErrIncorrectListSize
 			return
 		}
-		for _, elem := range m.RoundChangeJustification {
+		for _, elem := range m.ProposalJustification {
 			{
 				elemIndx := hh.Index()
 				byteLen := uint64(len(elem))
