@@ -20,13 +20,13 @@ func Round5() tests.SpecTest {
 		PostRoot: "da48cb7ea2776bbef227ff0da21527f51ff62239b411aa150cb72bb3129155ea",
 		OutputMessages: []*qbft.SignedMessage{
 			testingutils.SignQBFTMsg(ks.Shares[1], types.OperatorID(1), &qbft.Message{
-				MsgType:               qbft.RoundChangeMsgType,
-				Height:                qbft.FirstHeight,
-				Round:                 6,
-				Identifier:            testingutils.TestingIdentifier,
-				Root:                  [32]byte{},
-				ProposalJustification: [][]byte{},
-				PrepareJustification:  [][]byte{},
+				MsgType:                  qbft.RoundChangeMsgType,
+				Height:                   qbft.FirstHeight,
+				Round:                    6,
+				Identifier:               testingutils.TestingIdentifier,
+				Root:                     [32]byte{},
+				ProposalJustification:    [][]byte{},
+				RoundChangeJustification: [][]byte{},
 			}),
 		},
 		ExpectedTimerState: &testingutils.TimerState{

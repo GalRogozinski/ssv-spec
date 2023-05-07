@@ -44,11 +44,11 @@ func (m *Message) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 		offset += len(m.ProposalJustification[ii])
 	}
 
-	// Offset (7) 'PrepareJustification'
+	// Offset (7) 'RoundChangeJustification'
 	dst = ssz.WriteOffset(dst, offset)
-	for ii := 0; ii < len(m.PrepareJustification); ii++ {
+	for ii := 0; ii < len(m.RoundChangeJustification); ii++ {
 		offset += 4
-		offset += len(m.PrepareJustification[ii])
+		offset += len(m.RoundChangeJustification[ii])
 	}
 
 	// Field (3) 'Identifier'
@@ -78,24 +78,24 @@ func (m *Message) MarshalSSZTo(buf []byte) (dst []byte, err error) {
 		dst = append(dst, m.ProposalJustification[ii]...)
 	}
 
-	// Field (7) 'PrepareJustification'
-	if size := len(m.PrepareJustification); size > 13 {
-		err = ssz.ErrListTooBigFn("Message.PrepareJustification", size, 13)
+	// Field (7) 'RoundChangeJustification'
+	if size := len(m.RoundChangeJustification); size > 13 {
+		err = ssz.ErrListTooBigFn("Message.RoundChangeJustification", size, 13)
 		return
 	}
 	{
-		offset = 4 * len(m.PrepareJustification)
-		for ii := 0; ii < len(m.PrepareJustification); ii++ {
+		offset = 4 * len(m.RoundChangeJustification)
+		for ii := 0; ii < len(m.RoundChangeJustification); ii++ {
 			dst = ssz.WriteOffset(dst, offset)
-			offset += len(m.PrepareJustification[ii])
+			offset += len(m.RoundChangeJustification[ii])
 		}
 	}
-	for ii := 0; ii < len(m.PrepareJustification); ii++ {
-		if size := len(m.PrepareJustification[ii]); size > 65536 {
-			err = ssz.ErrBytesLengthFn("Message.PrepareJustification[ii]", size, 65536)
+	for ii := 0; ii < len(m.RoundChangeJustification); ii++ {
+		if size := len(m.RoundChangeJustification[ii]); size > 65536 {
+			err = ssz.ErrBytesLengthFn("Message.RoundChangeJustification[ii]", size, 65536)
 			return
 		}
-		dst = append(dst, m.PrepareJustification[ii]...)
+		dst = append(dst, m.RoundChangeJustification[ii]...)
 	}
 
 	return
@@ -141,7 +141,7 @@ func (m *Message) UnmarshalSSZ(buf []byte) error {
 		return ssz.ErrOffset
 	}
 
-	// Offset (7) 'PrepareJustification'
+	// Offset (7) 'RoundChangeJustification'
 	if o7 = ssz.ReadOffset(buf[72:76]); o7 > size || o6 > o7 {
 		return ssz.ErrOffset
 	}
@@ -181,22 +181,22 @@ func (m *Message) UnmarshalSSZ(buf []byte) error {
 		}
 	}
 
-	// Field (7) 'PrepareJustification'
+	// Field (7) 'RoundChangeJustification'
 	{
 		buf = tail[o7:]
 		num, err := ssz.DecodeDynamicLength(buf, 13)
 		if err != nil {
 			return err
 		}
-		m.PrepareJustification = make([][]byte, num)
+		m.RoundChangeJustification = make([][]byte, num)
 		err = ssz.UnmarshalDynamic(buf, num, func(indx int, buf []byte) (err error) {
 			if len(buf) > 65536 {
 				return ssz.ErrBytesLength
 			}
-			if cap(m.PrepareJustification[indx]) == 0 {
-				m.PrepareJustification[indx] = make([]byte, 0, len(buf))
+			if cap(m.RoundChangeJustification[indx]) == 0 {
+				m.RoundChangeJustification[indx] = make([]byte, 0, len(buf))
 			}
-			m.PrepareJustification[indx] = append(m.PrepareJustification[indx], buf...)
+			m.RoundChangeJustification[indx] = append(m.RoundChangeJustification[indx], buf...)
 			return nil
 		})
 		if err != nil {
@@ -219,10 +219,10 @@ func (m *Message) SizeSSZ() (size int) {
 		size += len(m.ProposalJustification[ii])
 	}
 
-	// Field (7) 'PrepareJustification'
-	for ii := 0; ii < len(m.PrepareJustification); ii++ {
+	// Field (7) 'RoundChangeJustification'
+	for ii := 0; ii < len(m.RoundChangeJustification); ii++ {
 		size += 4
-		size += len(m.PrepareJustification[ii])
+		size += len(m.RoundChangeJustification[ii])
 	}
 
 	return
@@ -287,15 +287,15 @@ func (m *Message) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 		hh.MerkleizeWithMixin(subIndx, num, 13)
 	}
 
-	// Field (7) 'PrepareJustification'
+	// Field (7) 'RoundChangeJustification'
 	{
 		subIndx := hh.Index()
-		num := uint64(len(m.PrepareJustification))
+		num := uint64(len(m.RoundChangeJustification))
 		if num > 13 {
 			err = ssz.ErrIncorrectListSize
 			return
 		}
-		for _, elem := range m.PrepareJustification {
+		for _, elem := range m.RoundChangeJustification {
 			{
 				elemIndx := hh.Index()
 				byteLen := uint64(len(elem))

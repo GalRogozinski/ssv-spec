@@ -50,18 +50,18 @@ type Message struct {
 	Round      Round  // QBFT round for which the msg is for
 	Identifier []byte `ssz-max:"56"` // instance Identifier this msg belongs to
 
-	Root                  [32]byte `ssz-size:"32"`
-	DataRound             Round
-	ProposalJustification [][]byte `ssz-max:"13,65536"` // 2^16
-	PrepareJustification  [][]byte `ssz-max:"13,65536"` // 2^16
+	Root                     [32]byte `ssz-size:"32"`
+	DataRound                Round
+	ProposalJustification    [][]byte `ssz-max:"13,65536"` // 2^16
+	RoundChangeJustification [][]byte `ssz-max:"13,65536"` // 2^16
 }
 
 func (msg *Message) GetProposalJustification() ([]*SignedMessage, error) {
 	return unmarshalJustifications(msg.ProposalJustification)
 }
 
-func (msg *Message) GetPrepareJustifications() ([]*SignedMessage, error) {
-	return unmarshalJustifications(msg.PrepareJustification)
+func (msg *Message) GetRoundChangeJustification() ([]*SignedMessage, error) {
+	return unmarshalJustifications(msg.RoundChangeJustification)
 }
 
 func unmarshalJustifications(data [][]byte) ([]*SignedMessage, error) {
@@ -121,7 +121,7 @@ func (msg *Message) Validate() error {
 	if _, err := msg.GetProposalJustification(); err != nil {
 		return err
 	}
-	if _, err := msg.GetPrepareJustifications(); err != nil {
+	if _, err := msg.GetRoundChangeJustification(); err != nil {
 		return err
 	}
 	if msg.MsgType > 5 {
@@ -243,10 +243,10 @@ func (signedMsg *SignedMessage) DeepCopy() *SignedMessage {
 		Identifier: make([]byte, len(signedMsg.Message.Identifier)),
 		//Data:       make([]byte, len(signedMsg.Message.Data)),
 
-		Root:                  signedMsg.Message.Root,
-		DataRound:             signedMsg.Message.DataRound,
-		PrepareJustification:  signedMsg.Message.PrepareJustification,
-		ProposalJustification: signedMsg.Message.ProposalJustification,
+		Root:                     signedMsg.Message.Root,
+		DataRound:                signedMsg.Message.DataRound,
+		RoundChangeJustification: signedMsg.Message.RoundChangeJustification,
+		ProposalJustification:    signedMsg.Message.ProposalJustification,
 	}
 	copy(ret.Message.Identifier, signedMsg.Message.Identifier)
 	//copy(ret.Message.Data, signedMsg.Message.Data)

@@ -81,14 +81,14 @@ func isValidProposal(
 	}
 
 	// get justifications
-	proposalJustification, _ := signedProposal.Message.GetProposalJustification() // no need to check error, checked on signedProposal.Validate()
-	prepareJustification, _ := signedProposal.Message.GetPrepareJustifications()  // no need to check error, checked on signedProposal.Validate()
+	proposalJustification, _ := signedProposal.Message.GetProposalJustification()       // no need to check error, checked on signedProposal.Validate()
+	roundChangeJustification, _ := signedProposal.Message.GetRoundChangeJustification() // no need to check error, checked on signedProposal.Validate()
 
 	if err := isProposalJustification(
 		state,
 		config,
 		proposalJustification,
-		prepareJustification,
+		roundChangeJustification,
 		state.Height,
 		signedProposal.Message.Round,
 		signedProposal.FullData,
@@ -233,9 +233,9 @@ func CreateProposal(state *State, config IConfig, fullData []byte, roundChanges,
 		Round:      state.Round,
 		Identifier: state.ID,
 
-		Root:                  r,
-		ProposalJustification: roundChangesData,
-		PrepareJustification:  preparesData,
+		Root:                     r,
+		ProposalJustification:    roundChangesData,
+		RoundChangeJustification: preparesData,
 	}
 	sig, err := config.GetSigner().SignRoot(msg, types.QBFTSignatureType, state.Share.SharePubKey)
 	if err != nil {
