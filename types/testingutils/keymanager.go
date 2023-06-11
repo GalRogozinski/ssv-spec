@@ -22,21 +22,23 @@ type testingKeyManager struct {
 	encryptionKeys map[string]*rsa.PrivateKey
 	domain         types.DomainType
 
-	slashableDataRoots [][]byte
+	slashableDataRoots      [][]byte
+	previouslyProposedSlots []spec.Slot
 }
 
 func NewTestingKeyManager() *testingKeyManager {
-	return NewTestingKeyManagerWithSlashableRoots([][]byte{})
+	return NewTestingKeyManagerWithSlashableState([][]byte{}, []spec.Slot{})
 }
 
-func NewTestingKeyManagerWithSlashableRoots(slashableDataRoots [][]byte) *testingKeyManager {
+func NewTestingKeyManagerWithSlashableState(slashableDataRoots [][]byte, previouslyProposedSlots []spec.Slot) *testingKeyManager {
 	ret := &testingKeyManager{
 		keys:           map[string]*bls.SecretKey{},
 		ecdsaKeys:      map[string]*ecdsa.PrivateKey{},
 		encryptionKeys: nil,
 		domain:         TestingSSVDomainType,
 
-		slashableDataRoots: slashableDataRoots,
+		slashableDataRoots:      slashableDataRoots,
+		previouslyProposedSlots: previouslyProposedSlots,
 	}
 
 	_ = ret.AddShare(Testing4SharesSet().ValidatorSK)
@@ -98,6 +100,11 @@ func (km *testingKeyManager) SignRoot(data types.Root, sigType types.SignatureTy
 
 // IsBeaconBlockSlashable returns error if the given block is slashable
 func (km *testingKeyManager) IsBeaconBlockSlashable(pk []byte, slot spec.Slot) error {
+	for _, s := range km.previouslyProposedSlots {
+		if s == slot {
+			return errors.New("slashable proposal, not signing")
+		}
+	}
 	return nil
 }
 

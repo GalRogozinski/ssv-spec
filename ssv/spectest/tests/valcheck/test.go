@@ -1,6 +1,7 @@
 package valcheck
 
 import (
+	spec "github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/bloxapp/ssv-spec/qbft"
 	"github.com/bloxapp/ssv-spec/ssv"
 	"github.com/bloxapp/ssv-spec/types"
@@ -10,14 +11,15 @@ import (
 )
 
 type SpecTest struct {
-	Name               string
-	Network            types.BeaconNetwork
-	BeaconRole         types.BeaconRole
-	Input              []byte
-	SlashableDataRoots [][]byte
-	SupportsBlinded    bool
-	ExpectedError      string
-	AnyError           bool
+	Name                  string
+	Network               types.BeaconNetwork
+	BeaconRole            types.BeaconRole
+	Input                 []byte
+	PreviousProposedSlots []spec.Slot
+	SlashableDataRoots    [][]byte
+	SupportsBlinded       bool
+	ExpectedError         string
+	AnyError              bool
 }
 
 func (test *SpecTest) TestName() string {
@@ -27,7 +29,7 @@ func (test *SpecTest) TestName() string {
 func (test *SpecTest) Run(t *testing.T) {
 	signer := testingutils.NewTestingKeyManager()
 	if len(test.SlashableDataRoots) > 0 {
-		signer = testingutils.NewTestingKeyManagerWithSlashableRoots(test.SlashableDataRoots)
+		signer = testingutils.NewTestingKeyManagerWithSlashableState(test.SlashableDataRoots, test.PreviousProposedSlots)
 	}
 
 	check := test.valCheckF(signer)
