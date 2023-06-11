@@ -86,12 +86,12 @@ func ProposerValueCheckF(
 	sharePublicKey []byte,
 	supportsBlinded bool,
 ) qbft.ProposedValueCheckF {
-	validate := func(blockData BeaconBlock, cd *types.ConsensusData, signer types.BeaconSigner, sharePublicKey []byte, blockDataType string) error {
+	validate := func(blockData BeaconBlock, duty *types.Duty, signer types.BeaconSigner, sharePublicKey []byte, blockDataType string) error {
 		slot, err := blockData.Slot()
 		if err != nil {
 			return errors.Wrapf(err, "failed to get slot from %s", blockDataType)
 		}
-		if cd.Duty.Slot != slot {
+		if duty.Slot != slot {
 			return errors.Errorf("%s slot != duty slot", blockDataType)
 		}
 		return signer.IsBeaconBlockSlashable(sharePublicKey, slot)
@@ -114,10 +114,10 @@ func ProposerValueCheckF(
 			if !supportsBlinded {
 				return fmt.Errorf("blinded blocks are not supported")
 			}
-			return validate(blockData, cd, signer, sharePublicKey, "blinded block data")
+			return validate(blockData, &cd.Duty, signer, sharePublicKey, "blinded block data")
 		}
 		if blockData, _, err := cd.GetBlockData(); err == nil {
-			return validate(blockData, cd, signer, sharePublicKey, "block data")
+			return validate(blockData, &cd.Duty, signer, sharePublicKey, "block data")
 		}
 
 		return errors.New("no block data")
