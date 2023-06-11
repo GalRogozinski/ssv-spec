@@ -94,6 +94,7 @@ func ProposerValueCheckF(
 		if duty.Slot != slot {
 			return errors.Errorf("%s slot != duty slot", blockDataType)
 		}
+		// TODO: should add validation for proposer index
 		return signer.IsBeaconBlockSlashable(sharePublicKey, slot)
 	}
 
