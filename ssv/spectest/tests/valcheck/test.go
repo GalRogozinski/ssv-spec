@@ -24,7 +24,7 @@ func (test *SpecTest) TestName() string {
 	return test.Name
 }
 
-func (test *SpecTest) Run(t *testing.T) {
+func (test *SpecTest) Run(t *testing.T) []types.Encoder {
 	signer := testingutils.NewTestingKeyManager()
 	if len(test.SlashableDataRoots) > 0 {
 		signer = testingutils.NewTestingKeyManagerWithSlashableRoots(test.SlashableDataRoots)
@@ -36,13 +36,15 @@ func (test *SpecTest) Run(t *testing.T) {
 
 	if test.AnyError {
 		require.NotNil(t, err)
-		return
+		return nil
 	}
 	if len(test.ExpectedError) > 0 {
 		require.EqualError(t, err, test.ExpectedError)
 	} else {
 		require.NoError(t, err)
 	}
+
+	return nil
 }
 
 func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueCheckF {
@@ -71,10 +73,11 @@ func (test *MultiSpecTest) TestName() string {
 	return test.Name
 }
 
-func (test *MultiSpecTest) Run(t *testing.T) {
+func (test *MultiSpecTest) Run(t *testing.T) []types.Encoder {
 	for _, test := range test.Tests {
 		t.Run(test.TestName(), func(t *testing.T) {
 			test.Run(t)
 		})
 	}
+	return nil
 }

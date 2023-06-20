@@ -22,7 +22,7 @@ func (test *SyncCommitteeAggregatorProofSpecTest) TestName() string {
 	return test.Name
 }
 
-func (test *SyncCommitteeAggregatorProofSpecTest) Run(t *testing.T) {
+func (test *SyncCommitteeAggregatorProofSpecTest) Run(t *testing.T) []types.Encoder {
 	ks := testingutils.Testing4SharesSet()
 	share := testingutils.TestingShare(ks)
 	v := testingutils.BaseValidator(keySetForShare(share))
@@ -48,6 +48,8 @@ func (test *SyncCommitteeAggregatorProofSpecTest) Run(t *testing.T) {
 	postRoot, err := r.GetBaseRunner().State.GetRoot()
 	require.NoError(t, err)
 	require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]))
+
+	return []types.Encoder{r.GetBaseRunner().State}
 }
 
 func keySetForShare(share *types.Share) *testingutils.TestKeySet {

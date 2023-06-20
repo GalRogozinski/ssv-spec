@@ -31,7 +31,7 @@ func (test *MsgProcessingSpecTest) TestName() string {
 	return test.Name
 }
 
-func (test *MsgProcessingSpecTest) Run(t *testing.T) {
+func (test *MsgProcessingSpecTest) Run(t *testing.T) []types.Encoder {
 	v := testingutils.BaseValidator(testingutils.KeySetForShare(test.Runner.GetBaseRunner().Share))
 	v.DutyRunners[test.Runner.GetBaseRunner().BeaconRoleType] = test.Runner
 	v.Network = test.Runner.GetNetwork()
@@ -67,6 +67,8 @@ func (test *MsgProcessingSpecTest) Run(t *testing.T) {
 		diff := typescomparable.PrintDiff(test.Runner, test.PostDutyRunnerState)
 		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]), fmt.Sprintf("post runner state not equal\n%s\n", diff))
 	}
+
+	return []types.Encoder{test.Runner}
 }
 
 func (test *MsgProcessingSpecTest) compareBroadcastedBeaconMsgs(t *testing.T) {

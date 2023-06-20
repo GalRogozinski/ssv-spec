@@ -27,7 +27,7 @@ func (test *StartNewRunnerDutySpecTest) TestName() string {
 	return test.Name
 }
 
-func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
+func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) []types.Encoder {
 	err := test.Runner.StartNewDuty(test.Duty)
 	if len(test.ExpectedError) > 0 {
 		require.EqualError(t, err, test.ExpectedError)
@@ -88,6 +88,8 @@ func (test *StartNewRunnerDutySpecTest) Run(t *testing.T) {
 		diff := comparable.PrintDiff(test.Runner, test.PostDutyRunnerState)
 		require.EqualValues(t, test.PostDutyRunnerStateRoot, hex.EncodeToString(postRoot[:]), fmt.Sprintf("post runner state not equal\n%s\n", diff))
 	}
+
+	return []types.Encoder{test.Runner}
 }
 
 type MultiStartNewRunnerDutySpecTest struct {
@@ -99,10 +101,13 @@ func (tests *MultiStartNewRunnerDutySpecTest) TestName() string {
 	return tests.Name
 }
 
-func (tests *MultiStartNewRunnerDutySpecTest) Run(t *testing.T) {
-	for _, test := range tests.Tests {
+func (tests *MultiStartNewRunnerDutySpecTest) Run(t *testing.T) []types.Encoder {
+	runners := make([]types.Encoder, len(tests.Tests))
+	for i, test := range tests.Tests {
 		t.Run(test.TestName(), func(t *testing.T) {
-			test.Run(t)
+			runner := test.Run(t)
+			runners[i] = runner[0]
 		})
 	}
+	return runners
 }

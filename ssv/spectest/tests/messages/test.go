@@ -18,7 +18,7 @@ func (test *MsgSpecTest) TestName() string {
 	return "msg " + test.Name
 }
 
-func (test *MsgSpecTest) Run(t *testing.T) {
+func (test *MsgSpecTest) Run(t *testing.T) []types.Encoder {
 	var lastErr error
 
 	for i, msg := range test.Messages {
@@ -55,4 +55,6 @@ func (test *MsgSpecTest) Run(t *testing.T) {
 	} else {
 		require.NoError(t, lastErr)
 	}
+
+	return nil
 }
