@@ -95,3 +95,16 @@ type BeaconNode interface {
 	ValidatorRegistrationCalls
 	DomainCalls
 }
+
+// TODO PR to go-eth2-client
+// BeaconBlock interface has all the methods needed for a beacon block defined by go-eth2-client
+type BeaconBlock interface {
+	IsEmpty() bool
+	Slot() (phase0.Slot, error)
+	Root() (phase0.Root, error)
+	BodyRoot() (phase0.Root, error)
+	ParentRoot() (phase0.Root, error)
+	StateRoot() (phase0.Root, error)
+	Attestations() ([]*phase0.Attestation, error)
+	String() string
+}

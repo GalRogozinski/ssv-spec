@@ -87,20 +87,14 @@ func ProposerValueCheckF(
 	sharePublicKey []byte,
 	supportsBlinded bool,
 ) qbft.ProposedValueCheckF {
-	validate := func(blockData spec.BeaconBlock, duty *types.Duty, signer types.BeaconSigner, sharePublicKey []byte, blockDataType string) error {
+	validate := func(blockData BeaconBlock, duty *types.Duty, signer types.BeaconSigner, sharePublicKey []byte,
+		blockDataType string) error {
 		slot, err := blockData.Slot()
 		if err != nil {
 			return errors.Wrapf(err, "failed to get slot from %s", blockDataType)
 		}
 		if duty.Slot != slot {
 			return errors.Errorf("%s slot != duty slot", blockDataType)
-		}
-		proposerIndex, err := blockData.ProposerIndex()
-		if err != nil {
-			return errors.Wrapf(err, "failed to get proposer proposerIndex from %s", blockDataType)
-		}
-		if validatorIndex != proposerIndex {
-			return errors.Errorf("%s validator's proposerIndex != block data proposerIndex", blockDataType)
 		}
 		// TODO: should add validation for proposer proposerIndex
 		return signer.IsBeaconBlockSlashable(sharePublicKey, slot)
@@ -123,9 +117,33 @@ func ProposerValueCheckF(
 			if !supportsBlinded {
 				return fmt.Errorf("blinded blocks are not supported")
 			}
+			const blindedProposerIndexErr = "failed to get proposer proposerIndex from blinded block data"
+			switch blockData.Version {
+			// Ugly code duplication, waiting for https://github.com/attestantio/go-eth2-client/pull/58
+			case spec.DataVersionBellatrix:
+				if blockData.Bellatrix.ProposerIndex != validatorIndex {
+					return errors.Wrapf(err, blindedProposerIndexErr)
+				}
+			case spec.DataVersionCapella:
+				if blockData.Capella.ProposerIndex != validatorIndex {
+					return errors.Wrapf(err, blindedProposerIndexErr)
+				}
+			}
 			return validate(blockData, &cd.Duty, signer, sharePublicKey, "blinded block data")
 		}
 		if blockData, _, err := cd.GetBlockData(); err == nil {
+			const proposerIndexErr = "failed to get proposer proposerIndex from block data"
+			// Ugly code duplication, waiting for https://github.com/attestantio/go-eth2-client/pull/58
+			switch blockData.Version {
+			case spec.DataVersionBellatrix:
+				if blockData.Bellatrix.ProposerIndex != validatorIndex {
+					return errors.Wrapf(err, proposerIndexErr)
+				}
+			case spec.DataVersionCapella:
+				if blockData.Capella.ProposerIndex != validatorIndex {
+					return errors.Wrapf(err, proposerIndexErr)
+				}
+			}
 			return validate(blockData, &cd.Duty, signer, sharePublicKey, "block data")
 		}
 
