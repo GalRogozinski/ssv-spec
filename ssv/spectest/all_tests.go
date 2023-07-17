@@ -146,5 +146,12 @@ var AllTests = []tests.TestF{
 	valcheckattestations.SlotMismatch,
 	valcheckattestations.ConsensusDataNil,
 	valcheckattestations.Valid,
+
 	valcheckproposer.BlindedBlock,
+	valcheckproposer.Valid,
+	valcheckproposer.Slashable,
+	valcheckproposer.SlotMismatch,
+	valcheckproposer.ProposerIndexMismatch,
+	valcheckproposer.BlockDataInvalid,
+	valcheckproposer.BlockDataNil,
 }
