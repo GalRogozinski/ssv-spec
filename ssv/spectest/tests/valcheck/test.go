@@ -64,6 +64,10 @@ func (test *SpecTest) valCheckF(signer types.BeaconSigner) qbft.ProposedValueChe
 	}
 }
 
+func (tests *SpecTest) GetPostState() (interface{}, error) {
+	return nil, nil
+}
+
 type MultiSpecTest struct {
 	Name  string
 	Tests []*SpecTest
@@ -79,4 +83,8 @@ func (test *MultiSpecTest) Run(t *testing.T) {
 			test.Run(t)
 		})
 	}
+}
+
+func (tests *MultiSpecTest) GetPostState() (interface{}, error) {
+	return nil, nil
 }
