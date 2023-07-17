@@ -41,6 +41,7 @@ var ValidatorRegistrationMsgID = func() []byte {
 
 var TestAttesterConsensusData = &types.ConsensusData{
 	Duty:    TestingAttesterDuty,
+	Version: spec.DataVersionCapella,
 	DataSSZ: TestingAttestationDataBytes,
 }
 var TestAttesterConsensusDataByts, _ = TestAttesterConsensusData.Encode()
@@ -54,6 +55,7 @@ var TestingAttesterNextEpochConsensusDataByts, _ = TestAttesterNextEpochConsensu
 
 var TestAggregatorConsensusData = &types.ConsensusData{
 	Duty:    TestingAggregatorDuty,
+	Version: spec.DataVersionCapella,
 	DataSSZ: TestingAggregateAndProofBytes,
 }
 var TestAggregatorConsensusDataByts, _ = TestAggregatorConsensusData.Encode()
@@ -89,6 +91,7 @@ var TestSyncCommitteeWithJustificationsConsensusData = func(ks *TestKeySet) *typ
 
 var TestSyncCommitteeConsensusData = &types.ConsensusData{
 	Duty:    TestingSyncCommitteeDuty,
+	Version: spec.DataVersionCapella,
 	DataSSZ: TestingSyncCommitteeBlockRoot[:],
 }
 var TestSyncCommitteeConsensusDataByts, _ = TestSyncCommitteeConsensusData.Encode()
@@ -102,6 +105,7 @@ var TestSyncCommitteeNextEpochConsensusDataByts, _ = TestSyncCommitteeNextEpochC
 
 var TestSyncCommitteeContributionConsensusData = &types.ConsensusData{
 	Duty:    TestingSyncCommitteeContributionDuty,
+	Version: spec.DataVersionCapella,
 	DataSSZ: TestingContributionsDataBytes,
 }
 var TestSyncCommitteeContributionConsensusDataByts, _ = TestSyncCommitteeContributionConsensusData.Encode()
