@@ -3,6 +3,7 @@ package ssv
 import (
 	"bytes"
 	"fmt"
+	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 
@@ -86,7 +87,7 @@ func ProposerValueCheckF(
 	sharePublicKey []byte,
 	supportsBlinded bool,
 ) qbft.ProposedValueCheckF {
-	validate := func(blockData BeaconBlock, duty *types.Duty, signer types.BeaconSigner, sharePublicKey []byte, blockDataType string) error {
+	validate := func(blockData spec.BeaconBlock, duty *types.Duty, signer types.BeaconSigner, sharePublicKey []byte, blockDataType string) error {
 		slot, err := blockData.Slot()
 		if err != nil {
 			return errors.Wrapf(err, "failed to get slot from %s", blockDataType)
@@ -94,7 +95,14 @@ func ProposerValueCheckF(
 		if duty.Slot != slot {
 			return errors.Errorf("%s slot != duty slot", blockDataType)
 		}
-		// TODO: should add validation for proposer index
+		proposerIndex, err := blockData.ProposerIndex()
+		if err != nil {
+			return errors.Wrapf(err, "failed to get proposer proposerIndex from %s", blockDataType)
+		}
+		if validatorIndex != proposerIndex {
+			return errors.Errorf("%s validator's proposerIndex != block data proposerIndex", blockDataType)
+		}
+		// TODO: should add validation for proposer proposerIndex
 		return signer.IsBeaconBlockSlashable(sharePublicKey, slot)
 	}
 
