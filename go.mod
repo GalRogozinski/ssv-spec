@@ -6,7 +6,7 @@ require (
 	github.com/attestantio/go-eth2-client v0.16.3 // if version is changed, types/generate.go needs adjustment
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0
 	github.com/ethereum/go-ethereum v1.12.0
-	github.com/ferranbt/fastssz v0.1.3
+	github.com/ferranbt/fastssz v0.1.2
 	github.com/goccy/go-yaml v1.11.0
 	github.com/herumi/bls-eth-go-binary v1.29.1
 	github.com/libp2p/go-libp2p v0.27.4
@@ -16,16 +16,12 @@ require (
 	github.com/stretchr/testify v1.8.4
 )
 
-// Once
-replace github.com/attestantio/go-eth2-client => github.com/GalRogozinski/go-eth2-client v0.0.0-20230717084043-796e6525c472
-
-require github.com/google/go-cmp v0.5.9
-
 require (
 	github.com/btcsuite/btcd/btcec/v2 v2.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.2 // indirect
 	github.com/holiman/uint256 v1.2.2 // indirect
 	github.com/ipfs/go-cid v0.4.1 // indirect
@@ -51,8 +47,8 @@ require (
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
-	golang.org/x/crypto v0.10.0 // indirect
-	golang.org/x/sys v0.9.0 // indirect
+	golang.org/x/crypto v0.7.0 // indirect
+	golang.org/x/sys v0.7.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
